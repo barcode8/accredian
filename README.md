@@ -1,6 +1,6 @@
 # Accredian Enterprise Landing Page
 
-A responsive landing page built with the Next.js App Router. The page presents enterprise learning content and includes a local lead-submission flow.
+A responsive landing page built with the Next.js App Router. It presents enterprise learning content and includes a lead-submission form that validates requests and logs validated submissions on the server.
 
 ## Features
 
@@ -13,8 +13,7 @@ A responsive landing page built with the Next.js App Router. The page presents e
 - Shared enquiry trigger used by the Hero, FAQ, and footer enquiry buttons.
 - Enquiry modal with a responsive image panel, backdrop blur, outside-click closing, Escape-key closing, body scroll locking, and opacity/scale transitions.
 - Lead form with inline validation errors, a submission loading state, duplicate-submission prevention, API error feedback, and a success status message.
-- `POST /api/leads` route that validates submitted lead data before storage.
-- JSON lead storage in `data/leads.json`; the storage utility creates the data directory when required and queues writes within the running process.
+- `POST /api/leads` route that validates submitted lead data on the server, logs the validated lead object, and returns a success response.
 
 ## Tech Stack
 
@@ -28,18 +27,18 @@ A responsive landing page built with the Next.js App Router. The page presents e
 ### Backend
 
 - Next.js Route Handler at `src/app/api/leads/route.ts`
-- Node.js filesystem APIs for JSON lead storage
 
-### Declared Libraries
+### Libraries
 
+- `zod` for the shared lead validation schema
 - `lucide-react`
 - `react-icons`
 
-### Declared Development Tools
+### Tools
 
+- npm
 - ESLint and `eslint-config-next`
 - PostCSS and `@tailwindcss/postcss`
-- TypeScript type definitions for Node.js and React
 
 ## Project Structure
 
@@ -58,11 +57,9 @@ src/
 │   ├── footer/                  # Footer component
 │   └── ...                      # Other landing-page section components
 └── lib/
-    ├── leadStorage.ts           # JSON storage and write queue
-    └── validation.ts            # Lead validation schema
+    └── validation.ts            # Shared Zod lead validation schema
 
 public/                          # Images, SVGs, course assets, and logos
-data/leads.json                  # Locally stored lead records
 ```
 
 ## Setup Instructions
@@ -88,13 +85,9 @@ Open [http://localhost:3000](http://localhost:3000) in a browser.
 
 ### Environment Variables
 
-The source does not read environment variables.
+No environment variables are read by the source code.
 
-The lead route writes to `data/leads.json`, so the application process needs write access to the project directory or the equivalent deployment filesystem.
-
-### Validation Dependency Note
-
-`src/lib/validation.ts` imports `zod`, but `zod` is not listed in the current `package.json` dependencies. A clean installation therefore requires adding that dependency before the lead form and API route can compile.
+No writable filesystem, database, or external service is required for the lead route.
 
 ## Approach Taken
 
@@ -104,15 +97,38 @@ I used local arrays and `map()` for repeated content, including testimonials, FA
 
 I used Tailwind utility classes for layout, spacing, typography, colors, shadows, breakpoints, and transitions. The layouts are responsive: section content stacks or changes grid columns on smaller viewports, and the testimonials carousel changes from two cards per page to one card per row.
 
-I placed enquiry state in a client-side provider used by the root layout. This lets the Hero, FAQ, and footer triggers open one modal rather than each maintaining separate form state and markup. The modal uses an effect only for Escape handling and restoring body scrolling after it closes.
+I placed enquiry state in a client-side provider used by the root layout. This lets the Hero, FAQ, and footer triggers open one modal rather than each maintaining separate form state and markup. The modal uses an effect for Escape handling and restoring body scrolling after it closes.
 
-I placed the lead validation schema in `src/lib/validation.ts` and import it in both the form and API route. The route validates the request body again before calling the storage utility. I used JSON storage for the implemented lead flow: `leadStorage.ts` reads the existing array, appends an ID and timestamp, and serializes writes through a promise queue within the running Node.js process.
+I placed the Zod lead validation schema in `src/lib/validation.ts` and import it in both the form and API route. The route validates the request body again, logs the validated lead object with `console.log()`, and returns the success response without writing to the filesystem.
 
-I organized page UI under `src/components`, shared lead logic under `src/lib`, the HTTP endpoint under `src/app/api`, static assets under `public`, and local lead records under `data`.
+I organized page UI under `src/components`, shared validation under `src/lib`, the HTTP endpoint under `src/app/api`, and static assets under `public`.
 
 ## AI Usage Explanation
 
 I used AI for brainstorming component boundaries, generating initial boilerplate, debugging implementation issues, suggesting refactoring opportunities, and drafting documentation. I reviewed the generated code, understood its behavior, modified it where needed, and integrated it manually into the project structure.
+
+## Improvements With More Time
+
+- Add unit tests for validation and interactive components.
+- Add integration and end-to-end tests for the lead-submission flow.
+- Add focus trapping and focus restoration for the modal.
+- Replace console logging with a database or CRM integration when durable lead persistence is required.
+- Add authenticated lead-management functionality.
+- Add analytics for enquiry interactions and submissions.
+- Add form autosave and more detailed API error handling.
+- Add reduced-motion behavior and further carousel refinements.
+- Add dark mode and internationalization.
+- Measure and optimize image loading and page performance.
+
+## Screenshots
+
+### Home Page
+
+(Add screenshot)
+
+### Lead Capture Modal
+
+(Add screenshot)
 
 ## Deployment
 
@@ -123,4 +139,4 @@ npm run build
 npm run start
 ```
 
-The lead route writes to the Node.js filesystem. Deploy it only to an environment with a writable filesystem if local JSON lead records need to persist. Environments with read-only or ephemeral filesystems will not provide durable storage for `data/leads.json`.
+The API route does not write to the filesystem or require a database. Validated lead submissions are logged by the server process, so the app can be deployed to environments with read-only filesystems, including Vercel.
