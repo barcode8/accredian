@@ -41,7 +41,7 @@ const audienceData: AudienceCardProps[] = [
 export default function StrategicSkillEnhancement() {
   return (
     <section className="bg-white px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-      <div className="relative mx-auto flex max-w-[1400px] flex-col overflow-hidden rounded-[42px] bg-[#2569d8] px-10 pt-12 shadow-sm lg:flex-row lg:px-16 lg:pt-16">
+      <div className="relative mx-auto flex max-w-[1400px] flex-col overflow-hidden rounded-[42px] bg-[#2569d8] px-6 pt-12 shadow-sm sm:px-10 lg:flex-row lg:px-16 lg:pt-16">
 
         {/* Left */}
         <div className="flex w-full flex-col justify-between lg:w-1/2">
@@ -50,7 +50,7 @@ export default function StrategicSkillEnhancement() {
               Who Should Join?
             </p>
 
-            <h2 className="max-w-md text-6xl font-bold leading-tight text-white">
+            <h2 className="max-w-md text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
               Strategic Skill Enhancement
             </h2>
           </div>

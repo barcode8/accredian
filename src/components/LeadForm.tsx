@@ -111,7 +111,7 @@ export default function LeadForm({ onSuccess }: LeadFormProps) {
           <select id="countryCode" name="countryCode" value={values.countryCode} onChange={handleChange} className="w-24 rounded-lg border border-slate-200 bg-white px-2 py-2.5 text-sm font-medium text-slate-700 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" aria-label="Country code">
             <option value="+91">+91</option>
           </select>
-          <input id="phone" name="phone" inputMode="numeric" maxLength={10} value={values.phone} onChange={handleChange} className={inputClassName} autoComplete="tel" placeholder="10-digit mobile number" />
+          <input id="phone" name="phone" inputMode="numeric" maxLength={10} value={values.phone} onChange={handleChange} className={`${inputClassName} min-w-0 flex-1`} autoComplete="tel" placeholder="10-digit mobile number" />
         </div>
       </FormField>
       <FormField id="company" label="Company Name" error={errors.company}>
